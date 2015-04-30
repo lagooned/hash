@@ -1,5 +1,7 @@
 #include "hashtable.h"
 #include <cmath>
+#include <cstdlib>
+#include <fstream>
 
 using namespace std;
 
@@ -14,6 +16,15 @@ HashTable::HashTable() {
     // initialize all array values to null
     for (int i = 0; i < tableSize; i++) {
         array[i] = NULL;
+    }
+
+    // read in primes to static array
+    string line;
+    ifstream file("primes.txt");
+    if (file.is_open()) {
+        for (int i = 0; getline(file, line); i++) {
+            primes[i] = atoi(line.c_str());
+        }
     }
 }
 
@@ -30,12 +41,12 @@ void HashTable::add(Date b, string name) {
     // hash the date object
     int hash = this->hash(b);
 
-    // TODO: create pair in here and pass it to
+    // create pair in here and pass it to
     vector<string> v;
     v.push_back(name);
-
     pair<Date, vector<string> > p(b, v);
-    findAndAdd(p, hash);
+
+    insert(p, array, hash);
 
     // increment size
     size++;
@@ -45,23 +56,25 @@ void HashTable::add(Date b, string name) {
     // in the helper method
 }
 
-// TODO: make this take a pair and i instead
-void HashTable::findAndAdd(const pair<Date, vector<string> > &p, int i) {
+void HashTable::insert(const pair<Date, vector<string> > &p,
+                           std::pair<Date, std::vector<std::string> > **&arr,
+                           int i) {
+
     // slot is empty
-    if (array[i] == NULL) {
+    if (arr[i] == NULL) {
         // add pair via copy
-        array[i] = new pair<Date, vector<string> >(p);
+        arr[i] = new pair<Date, vector<string> >(p);
     } else {
         // see if dates are the same
-        if(array[i]->first.equals(p.first)) {
+        if(arr[i]->first.equals(p.first)) {
             // add all the names from p to second
             for(int j = 0; j < p.second.size(); j++)
-                array[i]->second.push_back(p.second[j]);
+                arr[i]->second.push_back(p.second[j]);
         }
         // if not the same dates
         else {
             // try to add at different index using quad probing
-            findAndAdd(p, (int)pow(i, 2) % tableSize);
+            insert(p, arr, (int)pow(i, 2) % tableSize);
         }
     }
 }
@@ -80,12 +93,28 @@ int HashTable::hash(const Date &b) const {
 
 void HashTable::resize() {
     // iterate through primes
-    // until size/prime < 0.45
-    // resize(prime)
-    // tableSize = prime;
+    int i = 0;
+    while ( size / (float) primes[i] < 0.45f) i++;
+    int newTableSize;
+    resize(primes[i] = newTableSize);
+    tableSize = newTableSize;
 }
 
 void HashTable::resize(int newSize) {
     // keep temp array
+    std::pair<Date, std::vector<std::string> > **temp = new pair<Date, vector<string> >*[newSize];
     // iterate through current array
+    for (int i = 0; i < size; i++) {
+        // hash keys and add to temp array
+        if (array[i] != NULL) {
+            // hash current date at i
+            int index = hash(array[i]->first);
+            // insert into temp starting at index
+            insert(*array[i], temp, index);
+        }
+    }
+
+    // delete array and point array to the temp array
+    delete[] array;
+    array = temp;
 }

@@ -10,10 +10,12 @@ class HashTable {
     private:
         int size;
         int tableSize;
-        std::pair<Date, std::vector<std::string> >* *array;
+        std::pair<Date, std::vector<std::string> > **array;
+        static int primes[3244];
 
         void resize(int newSize);
-        void findAndAdd(const std::pair<Date, std::vector<std::string> > &p, int);
+        void insert(const std::pair<Date, std::vector<std::string> > &,
+            std::pair<Date, std::vector<std::string> > **&, int);
 
     public:
         HashTable();
