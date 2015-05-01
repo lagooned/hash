@@ -1,6 +1,8 @@
 #ifndef _DATE_H_
 #define _DATE_H_
 
+#include <sstream>
+
 class Date {
     private:
         int month;
@@ -25,6 +27,12 @@ class Date {
                 return true;
             else
                 return false;
+        }
+
+        std::string toString() {
+            std::stringstream ss;
+            ss << month << "/" << day << "/" << year;
+            return ss.str();
         }
 };
 

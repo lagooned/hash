@@ -11,18 +11,20 @@ class HashTable {
         int size;
         int tableSize;
         std::pair<Date, std::vector<std::string> > **array;
-        static int primes[3244];
+        int primes[3244];
 
         void resize(int newSize);
         void insert(const std::pair<Date, std::vector<std::string> > &,
-            std::pair<Date, std::vector<std::string> > **&, int);
+            std::pair<Date, std::vector<std::string> > **&, int, int, int);
 
     public:
         HashTable();
         ~HashTable();
+        int getSize() { return size; }
         void add(Date, std::string);
-        int hash(const Date &b) const;
+        int hash(const Date &b, int max) const;
         void resize();
+        std::string toString();
 };
 
 #endif
