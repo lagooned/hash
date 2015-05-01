@@ -8,4 +8,4 @@ date.o: date.cpp
 	g++ -c date.cpp
 
 clean:
-	rm HashTable *.o *.gch
+	rm HashTable *.o *.gch *.stackdump

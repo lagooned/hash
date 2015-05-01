@@ -16,15 +16,17 @@ class HashTable {
         void resize(int newSize);
         void insert(const std::pair<Date, std::vector<std::string> > &,
             std::pair<Date, std::vector<std::string> > **&, int, int, int);
+        int find(const Date &, int, int) const;
+        int find(const Date &) const;
 
     public:
         HashTable();
         ~HashTable();
+        std::vector<std::string> getNames(const Date &) const;
         int getSize() { return size; }
         void add(Date, std::string);
-        int hash(const Date &b, int max) const;
+        int hash(const Date &, int max) const;
         void resize();
-        std::string toString();
 };
 
 #endif
