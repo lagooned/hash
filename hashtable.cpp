@@ -36,6 +36,13 @@ HashTable::HashTable() {
  * default destructor
  */
 HashTable::~HashTable() {
+    // must also delete all pair objects
+    for (int i = 0; i < tableSize; i++) {
+        if (array[i] != NULL) {
+            delete array[i];
+        }
+    }
+
     delete[] array;
 }
 
@@ -185,7 +192,11 @@ void HashTable::resize(int newSize) {
         }
     }
 
-    // delete array and point array to the temp array
+    // deallocate array and point array to the temp array
+    for (int i = 0; i < tableSize; i++) {
+        delete array[i];
+    }
+
     delete[] array;
     array = temp;
 }
